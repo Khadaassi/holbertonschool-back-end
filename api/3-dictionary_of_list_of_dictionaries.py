@@ -21,7 +21,11 @@ def export_user_tasks(url):
                 }
                 for todo in todos
             ]
-            all_user_tasks[userId] = user_tasks
+            # Append user tasks to all_user_tasks dictionary
+            if userId in all_user_tasks:
+                all_user_tasks[userId].extend(user_tasks)
+            else:
+                all_user_tasks[userId] = user_tasks
         with open("todo_all_employees.json", mode="w") as file:
             json.dump(all_user_tasks, file)
         print("Data for all users exported to todo_all_employees.json " +
