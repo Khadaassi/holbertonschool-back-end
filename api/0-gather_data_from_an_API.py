@@ -1,49 +1,32 @@
 #!/usr/bin/python3
-"""Fetches and displays TODO list progress for a given employee ID"""
+""" using this REST API in CSV format"""
 
+import csv
 import requests
-import sys
+from sys import argv
 
 
-def get_employee_todo_progress(employee_id):
-    try:
-        # Fetch user data
-        user_response = requests.get(
-            f"https://jsonplaceholder.typicode.com/users/{employee_id}"
-        )
-        user_data = user_response.json()
-        employee_name = user_data.get("name")
+API_URL = 'https://jsonplaceholder.typicode.com'
 
-        # Fetch todos for the employee
-        todos_response = requests.get(
-            f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}"
-        )
-        todos_data = todos_response.json()
+if __name__ == '__main__':
+    USER_ID = argv[1]
 
-        # Count completed tasks
-        completed_tasks = [todo for todo in todos_data if
-                           todo.get("completed")]
-        num_completed_tasks = len(completed_tasks)
-        total_num_tasks = len(todos_data)
+    """ check user's informations """
+    user_response = requests.get(f"{API_URL}/users/{USER_ID}").json()
 
-        # Display progress
-        print(
-            f"Employee {employee_name} is done with tasks" +
-            "({num_completed_tasks}/{total_num_tasks}):"
-        )
-        for task in completed_tasks:
-            print(f"\t {task.get('title')}")
+    """ check user's to do list """
+    todo_response = requests.get(f"{API_URL}/todos?userId={USER_ID}").json()
 
-    except requests.RequestException as e:
-        print(f"Error fetching data: {e}")
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    """ write to csv file"""
+    with open(f"{USER_ID}.csv", mode='w') as csv_file:
+        writter = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
 
+        for task in todo_response:
+            writter.writerow([
+                user_response['id'],
+                user_response['username'],
+                task['completed'],
+                task['title']
+            ])
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 0-gather_data_from_an_API.py <employee_id>")
-        sys.exit(1)
-
-    employee_id = sys.argv[1]
-    get_employee_todo_progress(employee_id)
+        print(f"Data as been exported to {USER_ID}.csv")
