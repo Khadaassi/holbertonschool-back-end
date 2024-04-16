@@ -11,7 +11,7 @@ def get_employee_todo_progress(employee_id):
 
     # Fetch employee name
 
-    employee_name = requests.get(API_URL + f"/users/{employee_id}").json().get("name")
+    employee_name = requests.get(API_URL + "users/{}".format(id)).json()
 
     # Fetch todos for the employee
     todos_list = requests.get(API_URL + f"/todos?userId={employee_id}")
