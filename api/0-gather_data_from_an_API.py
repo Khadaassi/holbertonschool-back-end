@@ -33,6 +33,7 @@ def get_employee_todo_progress(employee_id):
             print(f"\t {task.get('title')}")
     
     except Exception as e:
+        print("An error occurred: {}".format(e))
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
