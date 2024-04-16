@@ -32,8 +32,10 @@ def get_employee_todo_progress(employee_id):
         for task in completed_tasks:
             print(f"\t {task.get('title')}")
     
+    except requests.RequestException as e:
+        print(f"Error fetching data: {e}")
     except Exception as e:
-        print("An error occurred: {}".format(e))
+        print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
