@@ -21,15 +21,17 @@ def get_employee_todo_progress(employee_id):
         todos_data = todos_response.json()
 
         # Count completed tasks
-        completed_tasks = [todo for todo in todos_data if
-                           todo.get("completed")]
+        completed_tasks = [
+            todo for todo in todos_data if todo.get("completed")
+            ]
         num_completed_tasks = len(completed_tasks)
         total_num_tasks = len(todos_data)
 
         # Display progress
         print(
-            f"Employee {employee_name} is done with tasks" +
-            "({num_completed_tasks}/{total_num_tasks}):"
+            "Employee {} is done with tasks ({}/{}):".format(
+                employee_name, num_completed_tasks, total_num_tasks
+            )
         )
         for task in completed_tasks:
             print(f"\t {task.get('title')}")
@@ -42,7 +44,7 @@ def get_employee_todo_progress(employee_id):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python3 0-gather_data_from_an_API.py <employee_id>")
+        print("Usage: python script.py <employee_id>")
         sys.exit(1)
 
     employee_id = sys.argv[1]
