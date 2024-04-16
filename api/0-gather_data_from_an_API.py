@@ -1,31 +1,49 @@
 #!/usr/bin/python3
-""" using this REST API """
+"""Fetches and displays TODO list progress for a given employee ID"""
 
 import requests
 import sys
 
-API_URL = "https://jsonplaceholder.typicode.com/"
+
+def get_employee_todo_progress(employee_id):
+    try:
+        # Fetch user data
+        user_response = requests.get(
+            f"https://jsonplaceholder.typicode.com/users/{employee_id}"
+        )
+        user_data = user_response.json()
+        employee_name = user_data.get("name")
+
+        # Fetch todos for the employee
+        todos_response = requests.get(
+            f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}"
+        )
+        todos_data = todos_response.json()
+
+        # Count completed tasks
+        completed_tasks = [todo for todo in todos_data if
+                           todo.get("completed")]
+        num_completed_tasks = len(completed_tasks)
+        total_num_tasks = len(todos_data)
+
+        # Display progress
+        print(
+            f"Employee {employee_name} is done with tasks" +
+            "({num_completed_tasks}/{total_num_tasks}):"
+        )
+        for task in completed_tasks:
+            print(f"\t {task.get('title')}")
+
+    except requests.RequestException as e:
+        print(f"Error fetching data: {e}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: ./0-gather_data_from_an_API.py <employee id>")
+        print("Usage: python3 0-gather_data_from_an_API.py <employee_id>")
         sys.exit(1)
 
-    id = sys.argv[1]
-
-    """ check user's information """
-    employee = requests.get(API_URL + "users/{}".format(id)).json()
-
-    """ check user's to do list """
-    todo_list = requests.get("{}todos?userId={}".format(API_URL, id)).json()
-
-    """ filter for task complete """
-    completed_tasks = [task.get("title")
-                       for task in todo_list if task.get("completed") is True]
-
-    """ display progression """
-    print("Employee {} is done with tasks({}/{}):".format(
-        employee.get("name"), len(completed_tasks), len(todo_list)))
-
-    for task in completed_tasks:
-        print("\t {}".format(task))
+    employee_id = sys.argv[1]
+    get_employee_todo_progress(employee_id)
