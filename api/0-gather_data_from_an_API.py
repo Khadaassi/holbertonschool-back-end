@@ -6,7 +6,7 @@ import sys
 
 
 def get_employee_todo_progress(employee_id):
-    #try:
+    try:
         # Fetch user data
         user_response = requests.get(
             f"https://jsonplaceholder.typicode.com/users/{employee_id}"
@@ -36,10 +36,10 @@ def get_employee_todo_progress(employee_id):
         for task in completed_tasks:
             print(f"\t {task.get('title')}")
 
-    #except requests.RequestException as e:
-        #print(f"Error fetching data: {e}")
-    #except Exception as e:
-        #print(f"An error occurred: {e}")
+    except requests.RequestException as e:
+        print(f"Error fetching data: {e}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 
 if __name__ == "__main__":
