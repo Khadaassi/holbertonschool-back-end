@@ -8,30 +8,31 @@ API_URL = "https://jsonplaceholder.typicode.com"
 
 
 def get_employee_todo_progress(employee_id):
+    try:
+        # Fetch employee name
 
-    # Fetch employee name
+        employee_name = requests.get(API_URL + "users/{}".format(id)).json()
 
-    employee_name = requests.get(API_URL + "users/{}".format(id)).json()
+        # Fetch todos for the employee
+        todos_list = requests.get(API_URL + f"/todos?userId={employee_id}")
+        total_num_tasks = len(todos_list)
 
-    # Fetch todos for the employee
-    todos_list = requests.get(API_URL + f"/todos?userId={employee_id}")
-    total_num_tasks = len(todos_list)
+        # Count completed tasks
+        completed_tasks = [
+            task for task in todos_list.json() if task.get("completed") is True
+        ]
+        num_completed_tasks = len(completed_tasks)
 
-    # Count completed tasks
-    completed_tasks = [
-        task for task in todos_list.json() if task.get("completed") is True
-    ]
-    num_completed_tasks = len(completed_tasks)
-
-    # Display progress
-    print(
-        "Employee {} is done with tasks ({}/{}):".format(
-            employee_name, num_completed_tasks, total_num_tasks
+        # Display progress
+        print(
+            "Employee {} is done with tasks ({}/{}):".format(
+                employee_name, num_completed_tasks, total_num_tasks
+            )
         )
-    )
-    for task in completed_tasks:
-        print(f"\t {task.get('title')}")
-
+        for task in completed_tasks:
+            print(f"\t {task.get('title')}")
+    
+    except Exception as e:
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
