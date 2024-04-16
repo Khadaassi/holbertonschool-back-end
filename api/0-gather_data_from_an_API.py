@@ -6,28 +6,40 @@ import sys
 
 
 def get_employee_todo_progress(employee_id):
-    try:
+    #try:
         # Fetch user data
-        user_data = requests.get(f"https://jsonplaceholder.typicode.com/users/{employee_id}").json()
+        user_response = requests.get(
+            f"https://jsonplaceholder.typicode.com/users/{employee_id}"
+        )
+        user_data = user_response.json()
         employee_name = user_data.get("name")
 
         # Fetch todos for the employee
-        todos_data = requests.get(f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}").json()
+        todos_response = requests.get(
+            f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}"
+        )
+        todos_data = todos_response.json()
 
         # Count completed tasks
-        completed_tasks = [todo for todo in todos_data if todo.get("completed")]
+        completed_tasks = [
+            todo for todo in todos_data if todo.get("completed")
+            ]
         num_completed_tasks = len(completed_tasks)
         total_num_tasks = len(todos_data)
 
         # Display progress
-        print(f"Employee {employee_name} is done with tasks ({num_completed_tasks}/{total_num_tasks}):")
+        print(
+            "Employee {} is done with tasks ({}/{}):".format(
+                employee_name, num_completed_tasks, total_num_tasks
+            )
+        )
         for task in completed_tasks:
-            print(f"\t{task.get('title')}")
+            print(f"\t {task.get('title')}")
 
-    except requests.RequestException as e:
-        print(f"Error fetching data: {e}")
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    #except requests.RequestException as e:
+        #print(f"Error fetching data: {e}")
+    #except Exception as e:
+        #print(f"An error occurred: {e}")
 
 
 if __name__ == "__main__":
